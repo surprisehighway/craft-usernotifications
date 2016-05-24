@@ -1,0 +1,121 @@
+{% import "_includes/forms" as forms %}
+
+{% if CraftEdition == CraftPro %}
+
+    <p>Note: <a href="https://craftcms.com/docs/templating/usermodel">UserModel</a> properties are available with the &#123;&#123; user &#125;&#125; variable in the message fields below.</p>
+    <hr>
+
+    <h2>New User Email</h2>
+    <p>Email message sent to the new user when they sign up.</p>
+
+    {{ forms.lightswitchField({
+    	label: 'Enable',
+    	id: 'newUserEnabled',
+    	name: 'newUserEnabled',
+    	on: settings.newUserEnabled
+    }) }}
+
+    {{ forms.textField({
+        label: 'Subject',
+        id: 'newUserSubject',
+        name: 'newUserSubject', 
+        value: settings['newUserSubject']
+    }) }}
+
+    {{ forms.textAreaField({
+        label: 'Body',
+        id: 'newUserBody',
+        name: 'newUserBody', 
+        value: settings['newUserBody'],
+        rows: 10
+    }) }}
+
+    <hr>
+
+    <h2>New User Admin Notification</h2>
+    <p>Email notification sent to administrators when a new user signs up.</p>
+
+    {{ forms.lightswitchField({
+    	label: 'Enable',
+    	id: 'newUserNotificationEnabled',
+    	name: 'newUserNotificationEnabled',
+    	on: settings.newUserNotificationEnabled
+    }) }}
+
+    {{ forms.textField({
+        label: 'Recipients',
+        instructions: 'Separate multiple recipients with commas.',
+        id: 'newUserNotificationRecipients',
+        name: 'newUserNotificationRecipients', 
+        value: settings['newUserNotificationRecipients']
+    }) }}
+
+    {{ forms.textField({
+        label: 'Subject',
+        id: 'newUserNotificationSubject',
+        name: 'newUserNotificationSubject', 
+        value: settings['newUserNotificationSubject']
+    }) }}
+
+    {{ forms.textAreaField({
+        label: 'Body',
+        id: 'newUserNotificationBody',
+        name: 'newUserNotificationBody', 
+        value: settings['newUserNotificationBody'],
+        rows: 10
+    }) }}
+
+    <hr>
+    <h2>User Group Update Email</h2>
+    <p>Email message sent to the user when their member group assignment is updated.</p>
+
+
+
+    {% set allGroups = craft.userGroups.getAllGroups() %}
+    {% set userGroups = settings['groupUpdate'] %}
+
+    {% if allGroups %}
+
+        {{ forms.lightswitchField({
+            label: 'Enable',
+            id: 'groupUpdateEnabled',
+            name: 'groupUpdateEnabled',
+            on: settings.groupUpdateEnabled
+        }) }}
+
+        <p>Choose which groups will trigger the email when a user is updated.</p>
+        <ul>
+            {% for group in allGroups %}
+                <li>
+                    {{ forms.checkbox({
+                        label: group.name|t,
+                        name: 'groupUpdate[]',
+                        value: group.id,
+                        checked: (group.id in userGroups)
+                    }) }}
+                </li>
+            {% endfor %}
+        </ul>
+
+        {{ forms.textField({
+            label: 'Subject',
+            id: 'groupUpdateSubject',
+            name: 'groupUpdateSubject', 
+            value: settings['groupUpdateSubject']
+        }) }}
+
+        {{ forms.textAreaField({
+            label: 'Body',
+            id: 'groupUpdateBody',
+            name: 'groupUpdateBody', 
+            value: settings['groupUpdateBody'],
+            rows: 10
+        }) }}
+
+    {% else %}
+        <p><em>Disabled: No User groups currently exist.</em></p>
+    {% endif %}
+
+{% else %}
+    <p><em>Disabled: User accounts are only available in Craft Pro.</em></p>
+{% endif %}
